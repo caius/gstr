@@ -1,0 +1,2 @@
+#!/bin/sh
+gst init-tests.st lib/* lib/tests/* run-tests.st -a $@

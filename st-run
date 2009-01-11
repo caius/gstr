@@ -1,0 +1,2 @@
+#!/bin/sh
+gst lib/* st-run.st -a $@
