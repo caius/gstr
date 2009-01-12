@@ -31,12 +31,13 @@ Object Extensions
 
 Object has a more traditional if statement: 
 
-    self if: someCondition then: [ do this ] else: [ do that ].
+    self if: someCondition then: [do this]
+    self if: someCondition then: [do this] else: [do that].
 
 BlockClosure gains if: and unless: methods: 
 
-    [ do something ] if: someCondition.
-    [ do something ] unless: someCondition.
+    [do something] if: someCondition.
+    [do something] unless: someCondition.
 
 Mock Objects
 ------------
@@ -52,7 +53,27 @@ You create the mock object, send it messages and then test what was sent.
     mock shouldHaveReceived: #doSomething "answers true"
     mock shouldHaveReceived: #someOtherMessage "answers false"
 
+I ought to change these to raise an exception if the message was not received?
+
+Testing
+-------
+
+I want to do something RSpec-like, but I'm not sure what.  
+
+I definitely want to change should: as it reads completely wrong.  
+
+    self should: [test code].
+    
+Maybe: 
+
+    [test code] shouldBe: true.
+    [test code] shouldEqual: 'hello'.
+    [test code] should: BeGreen.
+    [test code] should: BeWorth amount: 25.
+    
+(where BeGreen and BeWorth are custom matchers)
+
 Story Driven Development
 ------------------------
 
-Port RSpec, Cucumber and Watir over?
+Port Cucumber and Webrat/Watir over?
