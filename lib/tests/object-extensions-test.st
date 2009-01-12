@@ -1,5 +1,5 @@
 TestCase subclass: TestObjectExtensions [
-  | object value | 
+  | object | 
   
   setUp [
     object := Object new.
@@ -20,4 +20,35 @@ TestCase subclass: TestObjectExtensions [
   ]
 ]
 
+TestCase subclass: TestBlockExtensions [
+  testIfTrue [
+    | value | 
+    value := false.
+    [ value := true ] if: (1 = 1).
+    self should: [ value = true ].
+  ]
+  
+  testIfFalse [
+    | value | 
+    value := false.
+    [ value := true ] if: (1 = 2).
+    self should: [ value = false ].
+  ]
+
+  testUnlessTrue [
+    | value | 
+    value := false.
+    [ value := true ] unless: (1 = 2).
+    self should: [ value = true ].
+  ]
+  
+  testIfFalse [
+    | value | 
+    value := false.
+    [ value := true ] unless: (1 = 1).
+    self should: [ value = false ].
+  ]
+]
+
 TestSuite global addTest: TestObjectExtensions buildSuite.
+TestSuite global addTest: TestBlockExtensions buildSuite.
