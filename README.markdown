@@ -67,7 +67,6 @@ I definitely want to change should: as it reads completely wrong.
 Maybe: 
 
     [test code] shouldBe: true.
-    [test code] shouldEqual: 'hello'.
     [test code] should: BeGreen.
     [test code] should: BeWorth amount: 25.
     
