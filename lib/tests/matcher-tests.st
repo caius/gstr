@@ -1,7 +1,6 @@
 GSTR.Matcher subclass: MatchTwentyFive [
   matches: value [
-    self if: value = 25 then: [^true].
-    GSTR.TestMatchFailed signal: (self failureMessageFor: value).
+    ^(value = 25).
   ]
 ]
 

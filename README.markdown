@@ -10,6 +10,10 @@ scripts
 
 There are two runner scripts - st-run and st-test.  
 
+### st-run
+
+st-run loads all the files in lib, then passes your arguments to st-run.st.  The idea is that this will be something similar to rake, but I'm not quite sure how it works.  
+
 ### st-test
 
 st-test loads all the files in lib, then all the files in lib/tests, creating a global TestSuite (accessible via `TestSuite global.`).  
@@ -17,10 +21,6 @@ st-test loads all the files in lib, then all the files in lib/tests, creating a 
 Each file in lib/tests is expected to add itself to this global TestSuite - for example, if your TestCase is called MyTestCase do the following: 
 
     TestSuite global addTest: MyTestCase buildSuite.
-
-### st-run
-
-st-run loads all the files in lib, then passes your arguments to st-run.st.  The idea is that this will be something similar to rake, but I'm not quite sure how it works.  
 
 ### Smalltalk Image files
 
@@ -51,28 +51,68 @@ You create the mock object, send it messages and then test what was sent.
     mock doSomethingElse.
     
     mock shouldHaveReceived: #doSomething "answers true"
-    mock shouldHaveReceived: #someOtherMessage "answers false"
+    mock shouldHaveReceived: #someOtherMessage "raises an exception as someOtherMessage was not received"
 
-I ought to change these to raise an exception if the message was not received?
+There will also be a mechanism for stubbing existing objects - not sure how to implement this yet, but it will look like this: 
 
+    myInstance expects: #calculate with: { 1, 2 } andReturns: 3.
+
+    MyClass expects: #sayHello with: 'George' andReturns: 'Hello George'.
+    
 Testing
 -------
 
-I want to do something RSpec-like, but I'm not sure what.  
-
-I definitely want to change should: as it reads completely wrong.  
-
-    self should: [test code].
-    
-Maybe: 
+Blocks are extended to allow you to test the results.  
 
     [test code] shouldBe: true.
     [test code] should: BeGreen.
-    [test code] should: BeWorth amount: 25.
+    [test code] should: BeWorth amount: 25. 
     
 (where BeGreen and BeWorth are custom matchers)
+
+To implement a matcher you need to subclass GSTR.Matcher and implement the `matches: value` instance method.  If matched, return true, if not matched return false.  
+
+A sample implementation for BeGreen would be: 
+
+    GSTR.Matcher subclass: BeGreen [
+      matches: value [
+        ^(value = #green).
+      ]
+    ]
+
+If you need to pass parameters to your matcher then add a class initialisation method.  
+
+A sample implementation for BeWorth would be: 
+
+    GSTR.Matcher subclass: BeWorth [
+      | expectedValue |
+      matches: value [
+        ^(value = expectedValue).
+      ]
+      initWith: anExpectedValue [
+        expectedValue:= anExpectedValue.
+      ]
+    ]
+    
+    BeWorth class extend [
+      amount: anExpectedAmount [
+        | instance | 
+        instance:= BeWorth new.
+        instance initWith: anExpectedAmount.
+      ]
+    ] 
+    
+ORM
+---
+
+No idea yet.  
+
+Web Framework
+-------------
+
+Something built on SWAZOO - SWAZOO dispatches the request into a queue.  One of a pool of worker threads picks up the request and matches it against the router (yeah, GST is green-threaded but it could be ported to a native-threaded VM).  The router is configured in a Sinatra-like fashion - each route is associated with a block that actually does the work.  
 
 Story Driven Development
 ------------------------
 
-Port Cucumber and Webrat/Watir over?
+A Cucumber-alike ought to be pretty easy.  What about testing web results?  Port HTMLUnit and Celerity?  What about WATIR?

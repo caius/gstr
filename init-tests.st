@@ -8,7 +8,7 @@ Namespace current: GSTR [
       ^(self class displayString) , ' did not match ' , (value displayString).
     ]
     matches: value [
-      GSTR.TestMatchFailed signal: (self failureMessageFor: value).
+      ^false.
     ]
   ] 
 ]
@@ -35,7 +35,7 @@ BlockClosure extend [
     | value instance | 
     value:= self value.
     self if: (matcher isKindOf: Class) then: [instance:= matcher new] else: [instance:= matcher].
-    ^instance matches: value. 
+    self if: (instance matches: value) then: [^true] else: [GSTR.TestMatchFailed signal: (instance failureMessageFor: value)]. 
   ]
 
 ]
